@@ -78,6 +78,26 @@ const userController = {
             })
             .catch((err) => res.status(400).json(err));
     },
+
+    addFriend({ params }, res) {
+        User.findByAndUpdate(
+            { _id: params.id },
+            { $addToSet: { friends: params.friendId } },
+            { new: true }
+        )
+            .select('-__v')
+            .then((dbUserData) => {
+                if (!dbUserData) {
+                    res.status(404).json
+                    return;
+                }
+                res.json(dbUserData);
+            })
+            .catch((err) => {
+                res.status(400).json(err);
+            })
+    },
+
     removeFriend({ params }, res) {
         User.findByIdAndUpdate(
             { _id: params.id },
